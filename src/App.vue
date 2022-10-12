@@ -17,19 +17,23 @@
 		</div>
 
 		<!-- task list -->
-		<div class="task-list" v-if="filter === 'all'">
-			<p>You have {{ taskStore.totalCount }} tasks left to do</p>
-			<div v-for="task in taskStore.tasks" :key="task.id">
-				<TaskDetails :task="task" />
+		<transition name="switch" mode="out-in">
+			<div class="task-list" v-if="filter === 'all'">
+				<p>You have {{ taskStore.totalCount }} tasks left to do</p>
+				<transition-group name="list" tag="div">
+					<div v-for="task in taskStore.tasks" :key="task.id">
+						<TaskDetails :task="task" />
+					</div>
+				</transition-group>
 			</div>
-		</div>
 
-		<div class="task-list" v-if="filter === 'favs'">
-			<p>You have {{ taskStore.favCount }} favs left to do</p>
-			<div v-for="task in taskStore.favs" :key="task.id">
-				<TaskDetails :task="task" />
+			<div class="task-list" v-else>
+				<p>You have {{ taskStore.favCount }} favs left to do</p>
+				<div v-for="task in taskStore.favs" :key="task.id">
+					<TaskDetails :task="task" />
+				</div>
 			</div>
-		</div>
+		</transition>
 	</main>
 </template>
 
@@ -50,3 +54,39 @@ export default {
 	},
 };
 </script>
+
+<style>
+.list-enter-from {
+	opacity: 0;
+	transform: scale(0.6);
+}
+
+.list-enter-active {
+	transition: all 0.4s ease;
+}
+
+.list-leave-to {
+	opacity: 0;
+	transform: scale(0.6);
+}
+
+.list-leave-active {
+	transition: all 0.4s ease;
+	position: absolute;
+}
+
+.list-move {
+	transition: all 0.3s ease;
+}
+
+.switch-enter-from,
+.switch-leave-to {
+	opacity: 0;
+	transform: translateY(20px);
+}
+
+.switch-enter-active,
+.switch-leave-active {
+	transition: all 0.2s ease;
+}
+</style>
